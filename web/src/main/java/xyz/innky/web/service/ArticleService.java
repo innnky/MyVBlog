@@ -24,7 +24,7 @@ public class ArticleService {
     public List<Article> getArticleByState(Integer state, Integer page, Integer count, String keywords) {
         int start = (page - 1) * count;
         Long uid = Util.getCurrentUser().getId();
-        return articleMapper.getArticleByState(state, start, count, uid,keywords);
+        return articleMapper.getArticleByState(state, start, count, uid, keywords);
     }
 
     public Article getArticleById(Long aid) {
@@ -34,11 +34,11 @@ public class ArticleService {
     }
 
     public int addNewArticle(Article article) {
-        if (ObjectUtils.isEmpty(article.getSummary())){
+        if (ObjectUtils.isEmpty(article.getSummary())) {
             String stripHtml = stripHtml(article.getHtmlContent());
             article.setSummary(stripHtml.substring(0, stripHtml.length() > 50 ? 50 : stripHtml.length()));
         }
-        if (article.getId() == -1 ){
+        if (article.getId() == -1) {
             //添加操作
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             if (article.getState() == 1) {
@@ -58,8 +58,7 @@ public class ArticleService {
                 }
             }
             return i;
-        }
-        else {
+        } else {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             if (article.getState() == 1) {
                 //设置发表日期
@@ -79,9 +78,11 @@ public class ArticleService {
             return i;
         }
     }
-    private int addTagsToArticle(String[] dynamicTags, Long aid){
+
+    private int addTagsToArticle(String[] dynamicTags, Long aid) {
         return 1;
     }
+
     public String stripHtml(String content) {
         content = content.replaceAll("<p .*?>", "");
         content = content.replaceAll("<br\\s*/?>", "");
@@ -89,4 +90,16 @@ public class ArticleService {
         return content;
     }
 
+    public int updateArticleState(Long[] aids, Integer state) {
+        if (state == 2) {
+            return articleMapper.deleteArticleById(aids);
+        } else {
+            return articleMapper.updateArticleState(aids, 2);//放入到回收站中
+        }
+    }
+
+    public int restoreArticle(Long articleId) {
+
+        return articleMapper.updateArticleState(new Long[]{articleId}, 1);
+    }
 }

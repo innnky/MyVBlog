@@ -21,6 +21,18 @@
         </if>
         WHERE id=#{id}
     </update>
+    <update id="updateArticleState">
+        UPDATE article SET state=#{state} WHERE id IN
+        <foreach collection="aids" item="aid" separator="," open="(" close=")">
+            #{aid}
+        </foreach>
+    </update>
+    <delete id="deleteArticleById">
+        DELETE FROM article WHERE id IN
+        <foreach collection="aids" item="aid" separator="," open="(" close=")">
+            #{aid}
+        </foreach>
+    </delete>
 
     <select id="getArticleCountByState" resultType="java.lang.Integer">
         SELECT count(*) FROM article

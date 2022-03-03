@@ -18,6 +18,21 @@ public class ArticleController {
     @Autowired
     ArticleService articleService;
 
+    @PutMapping("/dustbin")
+    public RespBean updateArticleState(Long[] aids, Integer state){
+        if (articleService.updateArticleState(aids, state) == aids.length) {
+            return new RespBean("success", "删除成功!");
+        }
+        return new RespBean("error", "删除失败!");
+    }
+
+    @PutMapping("/restore")
+    public RespBean restoreArticle(Long articleId){
+        if (articleService.restoreArticle(articleId) == 1) {
+            return new RespBean("success", "还原成功!");
+        }
+        return new RespBean("error", "还原失败!");
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public RespBean addNewArticle(Article article) {
