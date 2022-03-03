@@ -1,0 +1,39 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    username: root
+    password: "000508"
+    url: jdbc:mysql://localhost:3306/vueblog2
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    druid:
+#      aop-patterns: com.atguigu.admin.*  #监控SpringBean
+#      filters: stat,wall     # 底层开启功能，stat（sql监控），wall（防火墙）
+#
+#      stat-view-servlet: # 配置监控页功能
+#        enabled: true
+#        login-username: admin
+#        login-password: admin
+#        resetEnable: false
+#
+#      web-stat-filter: # 监控web
+#        enabled: true
+#        urlPattern: /*
+#        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+#      filter:
+#        stat: # 对上面filters里面的stat的详细配置
+#          slow-sql-millis: 1000
+#          logSlowSql: true
+#          enabled: true
+#        wall:
+#          enabled: true
+#          config:
+#            drop-table-allow: false
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: xyz.innky.web.bean
+logging:
+  level:
+    xyz.innky.web.mapper: trace

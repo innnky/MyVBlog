@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.innky.web.mapper.ArticleMapper">
+    <insert id="addNewArticle">
+        INSERT INTO article SET title=#{title},mdContent=#{mdContent},htmlContent=#{htmlContent},summary=#{summary},cid=#{cid},uid=#{uid},publishDate=#{publishDate},state=#{state},editTime=#{editTime}
+    </insert>
+    <update id="pvIncrement">
+        update article set pageView=pageView+1 where id = #{aid}
+    </update>
+
+    <update id="updateArticle">
+        UPDATE article SET
+        title=#{title},mdContent=#{mdContent},htmlContent=#{htmlContent},summary=#{summary},cid=#{cid},editTime=#{editTime}
+        <if test="state==1">
+            ,state=1
+        </if>
+        <if test="publishDate!=null">
+            ,publishDate=#{publishDate}
+        </if>
+        WHERE id=#{id}
+    </update>
+
+    <select id="getArticleCountByState" resultType="java.lang.Integer">
+        SELECT count(*) FROM article
+        <where>
+            <if test="state!=-1">
+                AND state=#{state}
+            </if>
+            <if test="uid!=null">
+                AND uid=#{uid}
+            </if>
+            <if test="keywords!=null">
+                AND title LIKE concat('%',#{keywords},'%')
+            </if>
+        </where>
+    </select>
+    <resultMap id="BaseResultMap" type="xyz.innky.web.bean.Article">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="cid" property="cid"/>
+        <result column="uid" property="uid"/>
+        <result column="publishDate" property="publishDate"/>
+        <result column="editTime" property="editTime"/>
+        <result column="state" property="state"/>
+        <result column="pageView" property="pageView"/>
+        <result column="mdContent" property="mdContent"/>
+        <result column="htmlContent" property="htmlContent"/>
+        <result column="summary" property="summary"/>
+        <result column="nickname" property="nickname"/>
+        <result column="cateName" property="cateName"/>
+        <collection property="tags" ofType="xyz.innky.web.bean.Tags" column="tagName">
+            <id property="id" column="tid"/>
+            <result property="tagName" column="tagName"/>
+        </collection>
+    </resultMap>
+
+    <select id="getArticleByState" resultType="xyz.innky.web.bean.Article">
+
+        SELECT a.id,a.`title`,a.`editTime`,a.`pageView`,a.`state`,u.`nickname`,c.`cateName`,a.uid FROM article a,user
+        u,category c WHERE a.`cid`=c.`id` AND a.`uid`=u.`id`
+        <if test="state!=-2">
+            and a.uid=#{uid}
+        </if>
+        <if test="state!=-1 and state!=-2">
+            and a.state=#{state}
+        </if>
+        <if test="state==-2">
+            and a.state=1
+        </if>
+        <if test="keywords!=null">
+            AND title LIKE concat('%',#{keywords},'%')
+        </if>
+        ORDER BY a.editTime DESC limit #{start},#{count};
+
+    </select>
+    <select id="getArticleById" resultMap="BaseResultMap">
+        select article.*,t.tagName,t.id as tid,  u.nickname, c.cateName from article left join article_tags ats on article.id = ats.aid left join tags t on ats.tid = t.id left join user u on article.uid = u.id left join category c on article.cid = c.id where article.id = #{aid};
+    </select>
+</mapper>
