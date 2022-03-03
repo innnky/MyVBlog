@@ -3,10 +3,50 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xyz.innky.web.mapper.UserMapper">
+    <update id="updateUserEnabled">
+        UPDATE user set enabled=#{enabled} WHERE id=#{uid}
+    </update>
+    <delete id="deleteUserById">
+        delete from user where id =#{uid}
+    </delete>
+    <delete id="deleteUserRoleById">
+        delete from roles_user where uid =#{uid}
+    </delete>
     <select id="loadUserByUsername" resultType="user">
         select * from user where username = #{username}
     </select>
     <select id="getRolesByUid" resultType="xyz.innky.web.bean.Role">
         select roles.id, roles.name from roles, roles_user where roles.id = roles_user.rid and #{id} = roles_user.uid
     </select>
+    <select id="getUserByNickname" resultMap="BaseResultMap">
+        select user.*, r.name as rname, r.id as rid from user
+        left join roles_user ru on user.id = ru.uid
+        left join roles r on ru.rid = r.id where user.id not in (
+        select u.id from user u left join roles_user ru2 on u.id = ru2.uid
+        where ru2.rid = 1
+        )
+        <if test="nickname!=null and nickname!=''">
+            and nickname like "%"#{nickname}"%"
+        </if>
+        ORDER BY user.`id`
+    </select>
+
+    <select id="getAllRoles" resultType="xyz.innky.web.bean.Role">
+        select * from roles
+    </select>
+
+    <resultMap id="BaseResultMap" type="xyz.innky.web.bean.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="nickname" property="nickname"/>
+        <result column="password" property="password"/>
+        <result column="enabled" property="enabled"/>
+        <result column="email" property="email"/>
+        <result column="userface" property="userface"/>
+        <result column="regTime" property="regTime"/>
+        <collection property="roles" ofType="xyz.innky.web.bean.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+        </collection>
+    </resultMap>
 </mapper>
