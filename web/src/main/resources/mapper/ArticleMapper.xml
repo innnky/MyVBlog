@@ -90,4 +90,10 @@
     <select id="getArticleById" resultMap="BaseResultMap">
         select article.*,t.tagName,t.id as tid,  u.nickname, c.cateName from article left join article_tags ats on article.id = ats.aid left join tags t on ats.tid = t.id left join user u on article.uid = u.id left join category c on article.cid = c.id where article.id = #{aid};
     </select>
+    <select id="getArticleCountByCid" resultType="java.lang.Integer">
+        select count(*) from article where cid in
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

@@ -23,4 +23,6 @@ public interface ArticleMapper {
     int updateArticleState(@Param("aids") Long[] aids, @Param("state") int i);
 
     int deleteArticleById(@Param("aids") Long[] aids);
+
+    int getArticleCountByCid(String[] ids);
 }

@@ -9,4 +9,10 @@ import java.util.List;
 @Mapper
 public interface CategoryMapper {
     List<Category> getAllCategories();
+
+    int deleteCategoryByIds(String[] ids);
+
+    int addNewCate(Category category);
+
+    int updateCategory(Category category);
 }
