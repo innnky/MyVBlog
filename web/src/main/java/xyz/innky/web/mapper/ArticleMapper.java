@@ -29,4 +29,6 @@ public interface ArticleMapper {
     List<String> getCategories(Long id);
 
     List<Integer> getDataStatistics(Long id);
+
+    void doDataStatistic();
 }

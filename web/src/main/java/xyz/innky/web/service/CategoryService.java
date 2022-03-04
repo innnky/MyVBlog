@@ -2,6 +2,7 @@ package xyz.innky.web.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.innky.web.bean.Category;
 import xyz.innky.web.mapper.ArticleMapper;
 import xyz.innky.web.mapper.CategoryMapper;
@@ -10,6 +11,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Service
+@Transactional
+
 public class CategoryService {
 
     @Autowired

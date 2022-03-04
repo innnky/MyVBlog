@@ -6,6 +6,13 @@
     <insert id="addNewArticle">
         INSERT INTO article SET title=#{title},mdContent=#{mdContent},htmlContent=#{htmlContent},summary=#{summary},cid=#{cid},uid=#{uid},publishDate=#{publishDate},state=#{state},editTime=#{editTime}
     </insert>
+    <insert id="doDataStatistic">
+        INSERT INTO pv(countDate, pv, uid)
+        SELECT CURRENT_DATE(), totalPv - pv, t.`uid`
+        FROM pvview p,
+             totalpvview t
+        WHERE p.`uid` = t.`uid`
+    </insert>
     <update id="pvIncrement">
         update article set pageView=pageView+1 where id = #{aid}
     </update>

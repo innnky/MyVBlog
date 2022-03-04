@@ -1,19 +1,24 @@
 package xyz.innky.web.service;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import xyz.innky.web.bean.Article;
 import xyz.innky.web.mapper.ArticleMapper;
+import xyz.innky.web.mapper.TagsMapper;
 import xyz.innky.web.utils.Util;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Service
+@Transactional
+
 public class ArticleService {
 
+    @Autowired
+    TagsMapper tagsMapper;
     @Autowired
     ArticleMapper articleMapper;
 
@@ -80,7 +85,15 @@ public class ArticleService {
     }
 
     private int addTagsToArticle(String[] dynamicTags, Long aid) {
-        return 1;
+        //1.删除该文章目前所有的标签
+        tagsMapper.deleteTagsByAid(aid);
+        //2.将上传上来的标签全部存入数据库
+        tagsMapper.saveTags(dynamicTags);
+        //3.查询这些标签的id
+        List<Long> tIds = tagsMapper.getTagsIdByTagName(dynamicTags);
+        //4.重新给文章设置标签
+        int i = tagsMapper.saveTags2ArticleTags(tIds, aid);
+        return i == dynamicTags.length ? i : -1;
     }
 
     public String stripHtml(String content) {
@@ -109,5 +122,9 @@ public class ArticleService {
 
     public List<Integer> getDataStatistics() {
         return articleMapper.getDataStatistics(Util.getCurrentUser().getId());
+    }
+
+    public void doDataStatistic() {
+        articleMapper.doDataStatistic();
     }
 }
