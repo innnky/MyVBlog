@@ -62,4 +62,13 @@ public class ArticleController {
         return articleService.getArticleById(aid);
     }
 
+    @RequestMapping("/dataStatistics")
+    public Map<String,Object> dataStatistics() {
+        Map<String, Object> map = new HashMap<>();
+        List<String> categories = articleService.getCategories();
+        List<Integer> dataStatistics = articleService.getDataStatistics();
+        map.put("categories", categories);
+        map.put("ds", dataStatistics);
+        return map;
+    }
 }

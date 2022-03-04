@@ -96,4 +96,10 @@
             #{id}
         </foreach>
     </select>
+    <select id="getCategories" resultType="java.lang.String">
+        SELECT countDate from pv WHERE uid=#{uid} ORDER by countDate limit 7
+    </select>
+    <select id="getDataStatistics" resultType="java.lang.Integer">
+        SELECT pv from pv WHERE uid=#{uid} ORDER by countDate limit 7
+    </select>
 </mapper>

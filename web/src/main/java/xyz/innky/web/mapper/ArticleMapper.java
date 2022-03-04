@@ -25,4 +25,8 @@ public interface ArticleMapper {
     int deleteArticleById(@Param("aids") Long[] aids);
 
     int getArticleCountByCid(String[] ids);
+
+    List<String> getCategories(Long id);
+
+    List<Integer> getDataStatistics(Long id);
 }

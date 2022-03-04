@@ -102,4 +102,12 @@ public class ArticleService {
 
         return articleMapper.updateArticleState(new Long[]{articleId}, 1);
     }
+
+    public List<String> getCategories() {
+        return articleMapper.getCategories(Util.getCurrentUser().getId());
+    }
+
+    public List<Integer> getDataStatistics() {
+        return articleMapper.getDataStatistics(Util.getCurrentUser().getId());
+    }
 }
